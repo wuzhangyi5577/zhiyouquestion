@@ -1,0 +1,16 @@
+.navbar-title{
+	color: gainsboro;
+	text-align: center;
+	margin: 0 15px;
+	font-size: 18px;
+	line-height: 50px;
+}
+.navbar-title span{
+	line-height: 50px;
+}
+body{
+	margin-top: 70px;
+}
+.glyphicon{
+	cursor: pointer;
+}

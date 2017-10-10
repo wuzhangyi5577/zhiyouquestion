@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.css"/>
+		<link rel="stylesheet" type="text/css" href="css/all.css"/>
+	</head>
+	<body>
+		<nav class="navbar navbar-inverse navbar-fixed-top">
+			<div class="container">
+				<div class="row">
+					<div class="navbar-title">
+						<span id="goback" class="glyphicon glyphicon-chevron-left pull-left"></span>
+						个人资料
+						<span id="home" class="glyphicon glyphicon-home pull-right"></span>
+					</div>
+				</div>
+			</div>
+		</nav>
+		<div class="container">
+			<form action="/user/upload" method="post" enctype="multipart/form-data">
+				<div class="form-group">
+					<input type="file" name="file" id="file" value="" accept="image/jpg" autocomplete="off"/>
+				</div>
+				<div class="form-group">
+					<input type="submit" name="" id="" value="上传头像" class="form-control btn btn-success"/>
+				</div>
+			</form>
+		</div>
+		<!--放置模态框-->
+		<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		    <div class="modal-dialog">
+		        <div class="modal-content">
+		            <div class="modal-header">
+		                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		                <h4 class="modal-title" id="myModalLabel">上传头像--智游问答</h4>
+		            </div>
+		            <div class="modal-body">
+		            	<!--放置从后台返回的数据-->
+		            </div>
+		            <div class="modal-footer">
+		                <button type="button" class="btn btn-default" data-dismiss="modal">确认</button>
+		            </div>
+		        </div><!-- /.modal-content -->
+		    </div><!-- /.modal -->
+		</div>
+		<script src="js/jquery-3.2.1.js"></script>
+		<script src="js/bootstrap.min.js"></script>
+		<script type="text/javascript">
+			$('#goback').click(function(){
+				history.go(-1);
+			})
+			$('#home').click(function(){
+				location.href = 'index.html';
+			})
+			$('form').submit(function(event){
+				event.preventDefault();
+				var data = new FormData(this);
+				$.ajax({
+					url:this.action,
+					data:data,
+					method:'post',
+					contentType:false,
+					processData:false,
+					success:function(data){
+						$('.modal-body').html(data.msg);
+						$('#myModal').modal('show').on('hide.bs.modal',function(){										
+							location.href='/'
+						})
+					}
+				});
+			})
+		</script>
+	</body>
+</html>

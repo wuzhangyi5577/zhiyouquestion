@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>主页面</title>
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.css"/>
+		<link rel="stylesheet" type="text/css" href="css/all.css"/>
+		<style type="text/css">
+			.dropdown-menu{
+				margin-top: -5px;
+				z-index: 1 !important;
+				min-width: 100px;
+				right: 0;
+			}
+			.media img{
+				width: 60px;
+				height: 60px;
+				border-radius: 50%;
+			}
+			.media{
+				border-bottom: 1px solid gainsboro;
+				padding: 15px 0;
+				margin: 0;
+			}
+			.media-footing{
+				margin-top: 5px;
+				font-size: 12px;
+			}
+			.media-footing span:nth-last-child(1){
+				margin-left: 8px;
+			}
+		</style>
+	</head>
+	<body>
+		<nav class="navbar navbar-inverse navbar-fixed-top">
+			<div class="container">
+				<div class="row" style="position: relative;">
+					<a href="#" class="navbar-brand">智游教育</a>
+					<div class="navbar-title pull-right">
+						<span id="ask" class="glyphicon glyphicon-plus" style="margin-right: 5px;"></span>提问
+						<span id="user" data-toggle='dropdown' class="dropdown-toggle">
+							<span id="login" class="glyphicon glyphicon-user" style="margin-left: 10px;margin-right: 5px;"></span>
+							<span></span>
+						</span>
+						<ul class="dropdown-menu" role="menu" aria-labelledby="user">
+						    <li role="presentation">
+					            <a role="menuitem" tabindex="-1" href="userInfo.html" id="userInfo">个人资料</a>
+					        </li>
+					        <li role="presentation" class="divider"></li>
+					        <li role="presentation">
+					            <a role="menuitem" tabindex="-1" href="#" id="outlogin">退出登录</a>
+					        </li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</nav>
+		<!--放置模态框-->
+		<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		    <div class="modal-dialog">
+		        <div class="modal-content">
+		            <div class="modal-header">
+		                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		                <h4 class="modal-title" id="myModalLabel">退出登录--智游问答</h4>
+		            </div>
+		            <div class="modal-body">
+		            	<!--放置从后台返回的数据-->
+		            </div>
+		            <div class="modal-footer">
+		                <button type="button" class="btn btn-default" data-dismiss="modal">确认</button>
+		            </div>
+		        </div><!-- /.modal-content -->
+		    </div><!-- /.modal -->
+		</div>
+		<div class="container">
+			<div id="show" class="qusetion">
+				
+			</div>
+		</div>
+		<script src="js/jquery-3.2.1.js"></script>
+		<script src="js/bootstrap.min.js"></script>
+		<script src="js/jquery.cookie.js"></script>
+		<script type="text/javascript">
+			var username = $.cookie('username')
+			if(username) {
+				$('#user').find('span').last().text(username);
+				$('#ask').click(function() {
+					location.href = 'ask.html'
+				})
+				$('.qusetion').on('click','.media[data-question]',function(){
+//					alert('回答到'+$(this).attr('data-question'));
+					
+					//要将question 存到cookie
+					$.cookie('question',$(this).data('question'));
+					location.href='answer.html';
+				})
+			} else {
+				$('#user').find('span').last().text('登录').parent().removeAttr('data-toggle').click(function() {
+					location.href = 'login.html'
+				})
+				$('#ask').click(function() {
+					location.href = 'login.html'
+				})
+				$('.qusetion').on('click','.media[data-question]',function(){
+					location.href='login.html';
+				})
+			}
+			
+			$('#outlogin').click(function(event) {
+				event.preventDefault();
+				$.get('/user/out', (data) => {
+					$('.modal-body').html(data.msg);
+					$('#myModal').modal('show').on('hide.bs.modal',function(){										
+						location.href='/'
+					})
+				})
+			})
+//			$.get('/user/index',(data)=>{
+////				console.log(data)
+//				var Str = '';
+//				for (var i=0;i<data.msg.length;i++) {
+//					var info = {
+//						name:data.msg[i].split('.txt')[0]
+//					};
+////					console.log(info)
+//					$.get('/user/info',info,(data)=>{
+//						var qtinfo = data.msg;
+////						console.log(data.msg)
+//						Str +=`<div><p>${qtinfo.username}</p><p>${qtinfo.content}</p><p><span>${setTime(qtinfo.time)} </span><span> ${setIP(qtinfo.ip)} </span></p></div>`;
+//						$('#show').html(Str);
+//					})
+//				}
+//			})
+			
+			function setTime(time){
+				var time = new Date(time);
+				var y = time.getFullYear();
+				var M = time.getMonth()+1;
+				var d = time.getDate();
+				var h = time.getHours();
+				var m = time.getMinutes();
+				var times = y+'-'+M+'-'+d+' '+h+':'+m;
+				return times;
+			}
+			function setIP(ip){
+				if(ip.startsWith('::1')){
+					return 'localhost';
+				}
+				if(ip.startsWith('::ffff:')){
+					return ip.substr(7);
+				}
+			}
+			
+			
+			$.get('/user/all',(data)=>{
+//				console.log(data)
+				var Str = '';
+				for(var i=0;i<data.length;i++){
+					Str +=`<div class="media" data-question="${data[i].time}"><div class="pull-left"><img src="../userPic/${data[i].username}.jpg" onerror="defaultImg(this)"></div><div class="media-body"><h4 class="media-heading">${data[i].username}</h4>${data[i].content}</div><div class="media-footing"><span>${setTime(data[i].time)}</span><span>${setIP(data[i].ip)}</span></div></div>`;
+					if(data[i].answer){
+//						console.log(data[i].answer)
+						for (var j=0;j<data[i].answer.length;j++) {
+							Str +=`<div class="media"><div class="pull-right"><img src="../userPic/${data[i].answer[j].username}.jpg" onerror="defaultImg(this)"></div><div class="media-body"><h4 class="media-heading">${data[i].answer[j].username}</h4>${data[i].answer[j].content}</div><div class="media-footing"><span>${setTime(data[i].answer[j].time)}</span><span>${setIP(data[i].answer[j].ip)}</span></div></div>`;
+						}
+					}
+				}
+				$('#show').html(Str);
+			})
+			
+			function defaultImg(img){
+				$(img).attr('src','userPic/user.jpg')
+			}
+			
+			
+		</script>
+	</body>
+</html>

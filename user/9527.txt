@@ -1,0 +1,1 @@
+{"username":"9527","psw":"1234","check_psw":"1234","sex":"man","email":"123@123.com","scoure":"HTML5","time":1506668451334,"ip":"::1"}

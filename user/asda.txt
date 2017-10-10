@@ -1,0 +1,1 @@
+{"username":"asda","psw":"123","check_psw":"123","sex":"man","email":"aaaad@132.com","scoure":"HTML5"}

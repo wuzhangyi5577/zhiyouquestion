@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>注册</title>
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.css"/>
+		<link rel="stylesheet" type="text/css" href="css/all.css"/>
+	</head>
+	<body>
+		<!--头部-->
+		<nav class="navbar navbar-inverse navbar-fixed-top">
+			<div class="container">
+				<div class="row">
+					<div class="navbar-title">
+						<span id="goback" class="glyphicon glyphicon-chevron-left pull-left"></span>
+						注册
+						<span id="home" class="glyphicon glyphicon-home pull-right"></span>
+					</div>
+				</div>
+			</div>
+		</nav>
+		<!--表单-->
+		<div class="container">
+			<form action="/user/register" method="post">
+				<div class="form-group">
+					<input type="text" name="username" value="" required="required" placeholder="请填写昵称" class="form-control" pattern="^[a-zA-Z0-9\u4e00-\u9fa5]{4,6}"/>
+				</div>
+				<div class="form-group">
+					<input type="password" name="psw" value="" required="required" placeholder="请填写密码" class="form-control" pattern="^.{4,6}"/>
+				</div>
+				<div class="form-group">
+					<input type="password" name="check_psw" ivalue="" required="required" placeholder="请确认密码" class="form-control" pattern="^.{4,6}"/>
+				</div>
+				<div class="form-group">
+					<input type="radio" name="sex" value="man" checked="checked"/>&#x3000;先生&#x3000;&#x3000;
+					<input type="radio" name="sex" value="woman" />&#x3000;女士
+				</div>
+				<div class="form-group">
+					<input type="email" name="email" value="" required="required" placeholder="请填写邮箱" class="form-control"/>
+				</div>
+				<div class="form-group">
+					<select name="scoure" class="form-control">
+						<option value="HTML5">HTML5</option>
+						<option value="PHP">PHP</option>
+						<option value="Java">Java</option>
+					</select>
+				</div>
+				<div class="form-group">
+					<input type="submit" value="注册" class="form-control btn btn-success"/>
+				</div>
+			</form>
+		</div>
+		
+		<!--放置模态框-->
+		<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		    <div class="modal-dialog">
+		        <div class="modal-content">
+		            <div class="modal-header">
+		                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		                <h4 class="modal-title" id="myModalLabel">注册--智游问答</h4>
+		            </div>
+		            <div class="modal-body">
+		            	<!--放置从后台返回的数据-->
+		            </div>
+		            <div class="modal-footer">
+		                <button type="button" class="btn btn-default" data-dismiss="modal">确认</button>
+		            </div>
+		        </div><!-- /.modal-content -->
+		    </div><!-- /.modal -->
+		</div>
+		
+		<script src="js/jquery-3.2.1.js"></script>
+		<script src="js/bootstrap.min.js"></script>
+		<script type="text/javascript">
+			$('#goback').click(function(){
+				//返回上一页
+				history.go(-1);
+			})
+			$('#home').click(function(){
+				//返回主页面
+				location.href = 'index.html';
+			})
+			$('form').submit(function(event){
+				event.preventDefault();
+				
+				//验证密码
+				var password = $(':password').map(function(){
+					return $(this).val();
+				})
+				if(password[0] == password[1]){
+					//获取表单数据
+					$.post(this.action,$(this).serialize(),(data)=>{
+						$('.modal-body').html(data.msg);
+						//hide.bs.modal 模态框消失之后要执行的事件
+						$('#myModal').modal('show').on('hide.bs.modal',function(){
+							location.href = 'login.html';
+						});
+					})
+				}
+				
+				
+			})
+		</script>
+	</body>
+</html>
